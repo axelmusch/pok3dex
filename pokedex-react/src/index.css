@@ -5,6 +5,22 @@
     font-family: sans-serif;
 }
 
+.noselect {
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Old versions of Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
+}
+
 .header--container {
     display: flex;
     height: 65px;
@@ -45,4 +61,16 @@
 
 .pokemoncard--sprite {
     width: 100%;
+}
+
+.pokemoncard--3dVisibility {
+    background-color: #802222;
+    color: white;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.pokemoncard--pokemonCanvas {
+    width: 100%;
+    aspect-ratio: 1;
 }
