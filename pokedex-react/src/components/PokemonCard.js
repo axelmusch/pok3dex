@@ -10,7 +10,7 @@ export default function PokemonCard(props) {
     const [modelLoaded, setModelLoaded] = React.useState(false)
     const [modelShown, setModelShown] = React.useState(false)
     const { name, id, sprites, types } = props.pokeInfo
-
+    const [hasModel, setHasModel] = React.useState(false)
 
 
 
@@ -19,18 +19,22 @@ export default function PokemonCard(props) {
     }
 
     function toggle3D() {
-        console.log("3d")
+
+        modelShown ? console.log("3d shown") : console.log("3d hidden")
+
         setModelShown(prevModelShown => !prevModelShown)
     }
-    let typeString = ""
-    types.forEach(type => {
-        typeString += type.type.name + " "
+
+
+    const mappedTypes = types.map(type => {
+        return (
+            <p className={`type--${type.type.name} pokemoncard--type`} key={type.type.name}>{type.type.name}</p>
+        )
     })
 
 
     React.useEffect(() => {
-        console.log('effect for load', modelLoaded)
-        if (!modelLoaded && modelShown) {
+        if (modelShown) {
             var scene = new THREE.Scene();
             var camera = new THREE.PerspectiveCamera(20, 1, 0.1, 1000);
             var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -39,11 +43,28 @@ export default function PokemonCard(props) {
             document.getElementById(name).appendChild(renderer.domElement);
 
             var controls = new OrbitControls(camera, renderer.domElement);
+            controls.enablePan = false
+            controls.enableZoom = false
             controls.autoRotate = true
             camera.position.z = 8;
             camera.position.y = 0.5;
-            const light = new THREE.AmbientLight(0xffffff); // soft white light
-            light.intensity = 1
+
+            const light = new THREE.PointLight(0xffffff, 1, 100);
+            light.position.set(2, 2, 2);
+            scene.add(light);
+
+            const light2 = new THREE.PointLight(0xffffff, 1, 100);
+            light2.position.set(-2, 2, 2);
+            scene.add(light2);
+
+            const light3 = new THREE.PointLight(0xffffff, 1, 100);
+            light3.position.set(2, 2, -2);
+            scene.add(light3);
+
+            const light4 = new THREE.PointLight(0xffffff, 1, 100);
+            light4.position.set(-2, 2, -2);
+            scene.add(light4);
+
             scene.add(light);
             const loader = new GLTFLoader()
             const dracoLoader = new DRACOLoader();
@@ -51,15 +72,6 @@ export default function PokemonCard(props) {
 
             loader.dracoLoader = dracoLoader
             loader.load('./models/' + name + '.glb', function (gltf) {
-                gltf.scene.traverse(child => {
-                    if (child.isMesh) {
-
-
-                    }
-                    if (child.isGroup) console.log(child)
-                })
-
-
                 scene.add(gltf.scene);
                 renderer.render(scene, camera);
             });
@@ -70,31 +82,52 @@ export default function PokemonCard(props) {
                 renderer.render(scene, camera);
             };
             animate();
-            //setModelLoaded(true)
+
             window.addEventListener('resize', onWindowResize);
             function onWindowResize() {
                 console.log("resize")
-                camera.aspect = 1;
+
                 canvasWidth = document.getElementById(name).offsetWidth
                 renderer.setSize(canvasWidth, canvasWidth);
                 camera.updateProjectionMatrix();
-
             }
-
         }
-
     }, [modelShown])
+
+    if (!modelLoaded) {
+        const loader = new GLTFLoader()
+        const dracoLoader = new DRACOLoader();
+        dracoLoader.setDecoderPath('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/'); // use a full url path
+        loader.dracoLoader = dracoLoader
+        loader.load('./models/' + name + '.glb', function (gltf) {
+            setHasModel(true)
+
+        },
+            function (xhr) {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            },
+            // called when loading has errors
+            function (error) {
+            });
+        setModelLoaded(true)
+    }
+
+
+
 
     return (
         <div className="pokemoncard">
-            <p onClick={toggle3D} className="pokemoncard--3dVisibility noselect">{modelShown ? "Hide" : "Show"} 3D</p>
+            <div className="pokemoncard--topButtons">
+                <p className="noselect" onClick={toggleShiny}>{!showShiny ? '⭐' : '🌟'}</p>
+                {hasModel && <p onClick={toggle3D} className="pokemoncard--3dVisibility noselect">{modelShown ? "Hide" : "Show"} 3D</p>}
+            </div>
 
             {!modelShown ?
-                <img className="pokemoncard--sprite" onClick={toggleShiny} src={showShiny ? sprites.front_shiny : sprites.front_default} /> :
+                <img className="pokemoncard--sprite" src={showShiny ? sprites.front_shiny : sprites.front_default} /> :
                 <div id={name} className="pokemoncard--pokemonCanvas"></div>}
 
             <h2>{id}. {name}</h2>
-            <p>{typeString}</p>
+            <div className="pokemoncard--types">{mappedTypes}</div>
         </div>
     )
 

@@ -44,19 +44,33 @@
 }
 
 .pokemonlist {
+    width: 80vw;
+
     display: grid;
-    grid-template-columns: 20vw 20vw 20vw 20vw;
-    column-gap: 2.5vw;
-    row-gap: 10px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    column-gap: 25px;
+    row-gap: 25px;
     justify-content: center;
+    margin: 2.5vw auto;
 }
 
 .pokemoncard {
-    background-color: aliceblue;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px;
+    padding: 20px;
+    justify-content: flex-end;
+}
+
+.pokemoncard--topButtons {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
 }
 
 .pokemoncard--sprite {
@@ -66,11 +80,105 @@
 .pokemoncard--3dVisibility {
     background-color: #802222;
     color: white;
-    padding: 5px;
+    font-weight: bold;
+    padding: 8px 10px;
+    border-radius: 10px;
     cursor: pointer;
 }
 
 .pokemoncard--pokemonCanvas {
     width: 100%;
     aspect-ratio: 1;
+    cursor: grab;
+}
+
+.pokemoncard--pokemonCanvas>canvas {
+    max-width: 100%;
+    aspect-ratio: 1;
+}
+
+.pokemoncard--types {
+    display: flex;
+    color: #F8F8F8;
+}
+
+.pokemoncard--type {
+    padding: 5px 10px;
+    margin: 0 5px;
+    border-radius: 10px;
+    text-transform: capitalize;
+    font-weight: bold;
+
+}
+
+.type--normal {
+    background-color: #A8A8A8;
+}
+
+.type--fire {
+    background-color: #F08030;
+}
+
+.type--water {
+    background-color: #6890F0;
+}
+
+.type--grass {
+    background-color: #78C850;
+}
+
+.type--electric {
+    background-color: #F8D030;
+}
+
+.type--ice {
+    background-color: #98D8D8;
+}
+
+.type--fighting {
+    background-color: #C03028;
+}
+
+.type--poison {
+    background-color: #A040A0;
+}
+
+.type--ground {
+    background-color: #E0C068;
+}
+
+.type--flying {
+    background-color: #A890F0;
+}
+
+.type--psychic {
+    background-color: #F85888;
+}
+
+.type--bug {
+    background-color: #A8B820;
+}
+
+.type--rock {
+    background-color: #B8A038;
+}
+
+.type--ghost {
+    background-color: #705898;
+}
+
+.type--dark {
+    background-color: #705848;
+}
+
+.type--dragon {
+    background-color: #7038F8;
+}
+
+.type--steel {
+    background-color: #B8B8D0;
+}
+
+.type--fairy {
+    background-color: #F0B6BC;
 }
