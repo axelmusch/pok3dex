@@ -5,7 +5,7 @@ import PokemonCard from "./PokemonCard"
 export default function PokemonList() {
     const [pokemonList, setPokemonList] = React.useState([])
 
-    const numberOfMons = 151
+    const numberOfMons = 10
 
     React.useEffect(() => {
         fetch(`https://pokeapi.co/api/v2/pokemon?limit=${numberOfMons}`)
