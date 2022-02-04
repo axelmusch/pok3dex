@@ -3,6 +3,7 @@ import * as THREE from "three"
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import modelInfo from "../modelInfo";
 
 export default function PokemonCard(props) {
     const [showShiny, setShowShiny] = React.useState(false)
@@ -127,21 +128,24 @@ export default function PokemonCard(props) {
     }, [modelShown])
 
     if (!modelLoaded) {
-        const loader = new GLTFLoader()
-        const dracoLoader = new DRACOLoader();
-        dracoLoader.setDecoderPath('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/'); // use a full url path
-        loader.dracoLoader = dracoLoader
-        loader.load('./models/' + name + '.glb', function (gltf) {
-            setHasModel(true)
 
-        },
-            function (xhr) {
-                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-            },
-            // called when loading has errors
-            function (error) {
-            });
-        setModelLoaded(true)
+        console.log(modelInfo[id - 1])
+
+        /*   const loader = new GLTFLoader()
+          const dracoLoader = new DRACOLoader();
+          dracoLoader.setDecoderPath('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/'); // use a full url path
+          loader.dracoLoader = dracoLoader
+          loader.load('./models/' + name + '.glb', function (gltf) {
+              setHasModel(true)
+  
+          },
+              function (xhr) {
+                  console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+              },
+              // called when loading has errors
+              function (error) {
+              });
+          setModelLoaded(true) */
     }
 
 
