@@ -23,10 +23,9 @@
 
 .header--container {
     display: flex;
-    height: 65px;
     align-items: center;
     padding: 30px;
-    background: linear-gradient(90deg, #802222 1.18%, #d32626 100%);
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     color: white;
 }
 
@@ -35,8 +34,7 @@
 }
 
 .header--title {
-    margin-right: auto;
-    margin-left: 10px;
+    height: 75px;
 }
 
 .header--project {

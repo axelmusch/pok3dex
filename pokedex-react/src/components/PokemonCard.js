@@ -38,12 +38,13 @@ export default function PokemonCard(props) {
         if (modelShown) {
             var scene = new THREE.Scene();
             var camera = new THREE.PerspectiveCamera(20, 1, 0.1, 1000);
+            console.log(props.renderer)
             var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             let canvasWidth = document.getElementById(name).offsetWidth
             renderer.setSize(canvasWidth, canvasWidth);
-            document.getElementById(name).appendChild(renderer.domElement);
+            document.getElementById(name).appendChild(props.renderer.domElement);
 
-            var controls = new OrbitControls(camera, renderer.domElement);
+            var controls = new OrbitControls(camera, props.renderer.domElement);
             controls.enablePan = false
             //controls.enableZoom = false
             controls.autoRotate = true
@@ -98,21 +99,21 @@ export default function PokemonCard(props) {
             loader.load('./models/' + name + '.glb', function (gltf) {
                 gltf.scene.traverse(child => {
                     if (child.isMesh) {
-                        console.log(child.material)
+                        //console.log(child.material)
                         child.material.roughness = 0.8
                         let newMat = new THREE.MeshBasicMaterial({ map: child.material.map })
-                        console.log(newMat)
+                        //console.log(newMat)
                         //child.material = newMat
                     }
                 })
                 scene.add(gltf.scene);
-                renderer.render(scene, camera);
+                props.renderer.render(scene, camera);
             });
 
             var animate = function () {
                 requestAnimationFrame(animate);
                 controls.update()
-                renderer.render(scene, camera);
+                props.renderer.render(scene, camera);
             };
             animate();
 
@@ -121,7 +122,7 @@ export default function PokemonCard(props) {
                 console.log("resize")
 
                 canvasWidth = document.getElementById(name).offsetWidth
-                renderer.setSize(canvasWidth, canvasWidth);
+                props.renderer.setSize(canvasWidth, canvasWidth);
                 camera.updateProjectionMatrix();
             }
         }
@@ -131,21 +132,24 @@ export default function PokemonCard(props) {
 
         console.log(modelInfo[id - 1])
 
-        /*   const loader = new GLTFLoader()
-          const dracoLoader = new DRACOLoader();
-          dracoLoader.setDecoderPath('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/'); // use a full url path
-          loader.dracoLoader = dracoLoader
-          loader.load('./models/' + name + '.glb', function (gltf) {
-              setHasModel(true)
-  
-          },
-              function (xhr) {
-                  console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-              },
-              // called when loading has errors
-              function (error) {
-              });
-          setModelLoaded(true) */
+        /*  const loader = new GLTFLoader()
+         const dracoLoader = new DRACOLoader();
+         dracoLoader.setDecoderPath('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/'); // use a full url path
+         loader.dracoLoader = dracoLoader
+         loader.load('./models/' + name + '.glb', function (gltf) {
+             setHasModel(true)
+ 
+         },
+             function (xhr) {
+                 console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+             },
+             // called when loading has errors
+             function (error) {
+             }); */
+
+
+        modelInfo[id - 1] && setHasModel(true)
+        setModelLoaded(true)
     }
 
 

@@ -2,7 +2,7 @@ import React from "react"
 import PokemonCard from "./PokemonCard"
 
 
-export default function PokemonList() {
+export default function PokemonList(props) {
     const [pokemonList, setPokemonList] = React.useState([])
 
     const numberOfMons = 10
@@ -30,7 +30,7 @@ export default function PokemonList() {
     const cardElements = pokemonList.map((pokemon) => {
 
         return (
-            <PokemonCard key={pokemon.id} pokeInfo={pokemon}>{pokemon.name}</PokemonCard>
+            <PokemonCard renderer={props.renderer} key={pokemon.id} pokeInfo={pokemon}>{pokemon.name}</PokemonCard>
         )
     })
 
