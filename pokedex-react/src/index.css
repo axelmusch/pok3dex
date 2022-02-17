@@ -186,10 +186,24 @@
 .pokemondetail--pokemonCanvas {
     cursor: grab;
     flex-grow: 2;
+    position: relative;
 }
 
 .pokemondetail {
     display: flex;
     flex-direction: column;
     height: 100vh;
+}
+
+.pokemondetail__loadscreen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    opacity: 1;
+    transition: opacity 1s;
 }

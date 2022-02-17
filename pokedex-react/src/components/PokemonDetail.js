@@ -93,11 +93,19 @@ function PokemonDetail() {
                             //child.material = newMat
                         }
                     })
+
+                    document.getElementById("loadscreen").style.opacity = 0
+
+
                     scene.add(gltf.scene);
                     renderer.render(scene, camera);
                 });
             })
 
+        document.getElementById("loadscreen").addEventListener('transitionend', (e) => {
+            console.log('Transition ended');
+            document.getElementById("loadscreen").remove()
+        });
 
 
 
@@ -125,7 +133,9 @@ function PokemonDetail() {
     return (
         <div className='pokemondetail'>
             <Header />
-            <div id={name} className="pokemondetail--pokemonCanvas"></div>
+            <div id={name} className="pokemondetail--pokemonCanvas">
+                <div id='loadscreen' className='pokemondetail__loadscreen'><h2>Loading...</h2></div>
+            </div>
         </div>
 
     )
