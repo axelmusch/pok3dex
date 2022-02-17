@@ -5,23 +5,24 @@ import * as THREE from "three"
 
 import { BrowserRouter as Router } from "react-router-dom";
 import { Route, Routes } from "react-router-dom";
+import PokemonDetail from "./components/PokemonDetail";
 
 
 export default function App() {
 
-    let renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    //renderer.render()
 
     return (
-        <div>
-            <Header />
+        <div className="app">
+
 
             <Router>
+                {/*  <Header /> */}
                 <Routes>
 
-                    <Route path="/" element={<PokemonList renderer={renderer} />}>
+                    <Route exact path="/" element={<PokemonList />}>
                     </Route>
-
+                    <Route exact path="/pokemon/:pokemonId" element={<PokemonDetail />}>
+                    </Route>
 
 
                 </Routes>

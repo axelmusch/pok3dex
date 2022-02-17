@@ -1,4 +1,5 @@
 import React from "react"
+import Header from "./Header"
 import PokemonCard from "./PokemonCard"
 
 
@@ -16,15 +17,18 @@ export default function PokemonList(props) {
                     fetch(listItem.url)
                         .then(res => res.json())
                         .then(data2 => {
-                            tempList[data2.id] = (data2)
-
-                            tempList.length === data1.results.length && setPokemonList(tempList)
+                            tempList.push(data2)
+                            if (tempList.length - 1 === numberOfMons - 1) {
+                                tempList.sort((a, b) => {
+                                    return a.id - b.id;
+                                });
+                                setPokemonList(tempList)
+                            }
                         })
                 });
-
             })
-
     }, [])
+
 
 
     const cardElements = pokemonList.map((pokemon) => {
@@ -37,6 +41,10 @@ export default function PokemonList(props) {
     console.log(pokemonList)
 
     return (
-        <div className="pokemonlist">{cardElements}</div>
+        <div className="pokelist">
+            <Header />
+            <div className="pokemonlist">{cardElements}</div>
+        </div>
+
     )
 }

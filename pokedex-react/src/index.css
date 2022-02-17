@@ -21,10 +21,12 @@
                                     supported by Chrome, Edge, Opera and Firefox */
 }
 
+.app {}
+
 .header--container {
     display: flex;
     align-items: center;
-    padding: 30px;
+    padding: 20px;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     color: white;
 }
@@ -41,15 +43,22 @@
     font-weight: 400;
 }
 
+.pokelist {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
 .pokemonlist {
     width: 80vw;
-
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     column-gap: 25px;
     row-gap: 25px;
     justify-content: center;
     margin: 2.5vw auto;
+    padding: 10px;
+    overflow: auto;
 }
 
 .pokemoncard {
@@ -84,16 +93,7 @@
     cursor: pointer;
 }
 
-.pokemoncard--pokemonCanvas {
-    width: 100%;
-    aspect-ratio: 1;
-    cursor: grab;
-}
 
-.pokemoncard--pokemonCanvas>canvas {
-    max-width: 100%;
-    aspect-ratio: 1;
-}
 
 .pokemoncard--types {
     display: flex;
@@ -179,4 +179,16 @@
 
 .type--fairy {
     background-color: #F0B6BC;
+}
+
+
+.pokemondetail--pokemonCanvas {
+    cursor: grab;
+    flex-grow: 2;
+}
+
+.pokemondetail {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
