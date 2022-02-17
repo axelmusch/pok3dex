@@ -2,7 +2,7 @@ import React from "react"
 import { Link } from "react-router-dom";
 
 import modelInfo from "../modelInfo";
-
+import logo_small from "../images/logo_small.png"
 export default function PokemonCard(props) {
     const [showShiny, setShowShiny] = React.useState(false)
 
@@ -17,12 +17,7 @@ export default function PokemonCard(props) {
         setShowShiny(prevShiny => !prevShiny)
     }
 
-    function toggle3D() {
 
-        modelShown ? console.log("3d shown") : console.log("3d hidden")
-
-        setModelShown(prevModelShown => !prevModelShown)
-    }
 
 
     const mappedTypes = types.map(type => {
@@ -47,8 +42,9 @@ export default function PokemonCard(props) {
             <div className="pokemoncard--topButtons">
                 <p className="noselect" onClick={toggleShiny}>{!showShiny ? '⭐' : '🌟'}</p>
                 {hasModel &&
-                    <Link to={`/pokemon/${id}`}>
-                        <p onClick={toggle3D} className="pokemoncard--3dVisibility noselect">{modelShown ? "Hide" : "Show"} 3D</p>
+                    <Link className="pokemoncard--3dVisibility noselect" to={`/pokemon/${id}`}>
+                        {/*  <p className="pokemoncard--3dVisibility noselect">{modelShown ? "Hide" : "Show"} 3D</p> */}
+                        <img src={logo_small} />
                     </Link>}
             </div>
 

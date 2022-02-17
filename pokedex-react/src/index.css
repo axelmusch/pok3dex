@@ -26,7 +26,7 @@
 .header--container {
     display: flex;
     align-items: center;
-    padding: 20px;
+    padding: 10px;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     color: white;
 }
@@ -36,7 +36,7 @@
 }
 
 .header--title {
-    height: 75px;
+    height: 65px;
 }
 
 .header--project {
@@ -85,12 +85,13 @@
 }
 
 .pokemoncard--3dVisibility {
-    background-color: #802222;
-    color: white;
-    font-weight: bold;
-    padding: 8px 10px;
     border-radius: 10px;
     cursor: pointer;
+}
+
+.pokemoncard--3dVisibility>img {
+
+    width: 50px;
 }
 
 
