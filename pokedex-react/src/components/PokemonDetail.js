@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 
 import * as THREE from "three"
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -9,11 +9,14 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import modelInfo from "../modelInfo";
 import Header from './Header';
 
-function PokemonDetail() {
+function PokemonDetail(props) {
     const { pokemonId } = useParams()
+    const location = useLocation();
+    //const { from } = location.state;   
+    console.log(location.state.name)
 
     /* const { name, id, sprites, types } = props.pokeInfo */
-    const name = "bulbasaur"
+    const name = location.state.name
     console.log(pokemonId)
     React.useEffect(() => {
 
@@ -77,30 +80,45 @@ function PokemonDetail() {
 
         loader.dracoLoader = dracoLoader
 
+        let dat
+        if (location.state) {
+            console.log("exists");
+            dat = location.state
+            loader.load(`../models/${dat.name}.glb`, function (gltf) {
+                gltf.scene.traverse(child => {
+                    if (child.isMesh) {
+                        child.material.roughness = 0.8
+                        let newMat = new THREE.MeshBasicMaterial({ map: child.material.map })
+                    }
+                })
 
+                document.getElementById("loadscreen").style.opacity = 0
 
-        fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`)
-            .then(res => res.json())
-            .then(data => {
-                console.log(data)
-                loader.load(`../models/${data.name}.glb`, function (gltf) {
-                    gltf.scene.traverse(child => {
-                        if (child.isMesh) {
-                            //console.log(child.material)
-                            child.material.roughness = 0.8
-                            let newMat = new THREE.MeshBasicMaterial({ map: child.material.map })
-                            //console.log(newMat)
-                            //child.material = newMat
-                        }
-                    })
+                scene.add(gltf.scene);
+                renderer.render(scene, camera);
+            });
+        } else {
+            console.log("doenst exist");
+            fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`)
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data)
+                    dat = data
+                    loader.load(`../models/${dat.name}.glb`, function (gltf) {
+                        gltf.scene.traverse(child => {
+                            if (child.isMesh) {
+                                child.material.roughness = 0.8
+                                let newMat = new THREE.MeshBasicMaterial({ map: child.material.map })
 
-                    document.getElementById("loadscreen").style.opacity = 0
+                            }
+                        })
+                        document.getElementById("loadscreen").style.opacity = 0
+                        scene.add(gltf.scene);
+                        renderer.render(scene, camera);
+                    });
+                })
+        }
 
-
-                    scene.add(gltf.scene);
-                    renderer.render(scene, camera);
-                });
-            })
 
         document.getElementById("loadscreen").addEventListener('transitionend', (e) => {
             console.log('Transition ended');
@@ -129,12 +147,33 @@ function PokemonDetail() {
 
     }, [])
 
+    const mappedTypes = location.state.types.map(type => {
+        return (
+            <p className={`type--${type.type.name} pokemoncard--type`} key={type.type.name}>{type.type.name}</p>
+        )
+    })
 
     return (
         <div className='pokemondetail'>
             <Header />
             <div id={name} className="pokemondetail--pokemonCanvas">
                 <div id='loadscreen' className='pokemondetail__loadscreen'><h2>Loading...</h2></div>
+
+                <div className='pokemondetail__details'>
+                    <div>{"back"}</div>
+                    <div>{"prev"}</div>
+                    <div>{"next"}</div>
+
+                    <div className='pokemondetail__details__bottom'>
+                        <div className='pokemondetail__details__types'>{mappedTypes}</div>
+                        <h1 className='pokemondetail__details__name'>{name}</h1>
+                        <div className='pokemondetail__details__title'>{"title"}</div>
+
+                    </div>
+
+
+                </div>
+
             </div>
         </div>
 

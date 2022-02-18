@@ -6,7 +6,7 @@ import PokemonCard from "./PokemonCard"
 export default function PokemonList(props) {
     const [pokemonList, setPokemonList] = React.useState([])
 
-    const numberOfMons = 20
+    const numberOfMons = 60
 
 
     React.useEffect(() => {
