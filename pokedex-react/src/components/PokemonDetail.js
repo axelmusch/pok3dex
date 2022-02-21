@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useLocation, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 import * as THREE from "three"
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -9,24 +9,20 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import modelInfo from "../modelInfo";
 import Header from './Header';
 
-function PokemonDetail(props) {
+function PokemonDetail() {
     const { pokemonId } = useParams()
-    const location = useLocation();
-    //const { from } = location.state;   
-    console.log(location.state.name)
+    const [currentPokemon, setCurrentPokemon] = React.useState()
+    const [prevPokemon, setPrevPokemon] = React.useState()
+    const [nextPokemon, setNextPokemon] = React.useState()
 
-    /* const { name, id, sprites, types } = props.pokeInfo */
-    const name = location.state.name
-    console.log(pokemonId)
     React.useEffect(() => {
-
         let scene = new THREE.Scene();
         let renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        let canvasWidth = document.getElementById(name).offsetWidth
-        let canvasHeight = document.getElementById(name).offsetHeight
+        let canvasWidth = document.getElementById("detailCanvas").offsetWidth
+        let canvasHeight = document.getElementById("detailCanvas").offsetHeight
         let camera = new THREE.PerspectiveCamera(30, canvasWidth / canvasHeight, 0.1, 1000);
         renderer.setSize(canvasWidth, canvasHeight);
-        document.getElementById(name).appendChild(renderer.domElement);
+        document.getElementById("detailCanvas").appendChild(renderer.domElement);
 
         let controls = new OrbitControls(camera, renderer.domElement);
         controls.enablePan = false
@@ -81,49 +77,35 @@ function PokemonDetail(props) {
         loader.dracoLoader = dracoLoader
 
         let dat
-        if (location.state) {
-            console.log("exists");
-            dat = location.state
-            loader.load(`../models/${dat.name}.glb`, function (gltf) {
-                gltf.scene.traverse(child => {
-                    if (child.isMesh) {
-                        child.material.roughness = 0.8
-                        let newMat = new THREE.MeshBasicMaterial({ map: child.material.map })
-                    }
-                })
 
-                document.getElementById("loadscreen").style.opacity = 0
+        fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`)
+            .then(res => res.json())
+            .then(data => {
+                console.log("🚀 ~ file: PokemonDetail.js ~ line 105 ~ React.useEffect ~ data", data)
+                console.log(data)
+                dat = data
+                setCurrentPokemon(dat)
+                loader.load(`../models/${dat.name}.glb`, function (gltf) {
+                    gltf.scene.traverse(child => {
+                        if (child.isMesh) {
+                            child.material.roughness = 0.8
+                            let newMat = new THREE.MeshBasicMaterial({ map: child.material.map })
+                        }
+                    })
+                    if (document.getElementById("loadscreen")) document.getElementById("loadscreen").style.opacity = 0
+                    scene.add(gltf.scene);
+                    renderer.render(scene, camera);
+                });
+            })
 
-                scene.add(gltf.scene);
-                renderer.render(scene, camera);
+
+        if (document.getElementById("loadscreen")) {
+            document.getElementById("loadscreen").addEventListener('transitionend', (e) => {
+                console.log('Transition ended');
+                document.getElementById("loadscreen").remove()
             });
-        } else {
-            console.log("doenst exist");
-            fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`)
-                .then(res => res.json())
-                .then(data => {
-                    console.log(data)
-                    dat = data
-                    loader.load(`../models/${dat.name}.glb`, function (gltf) {
-                        gltf.scene.traverse(child => {
-                            if (child.isMesh) {
-                                child.material.roughness = 0.8
-                                let newMat = new THREE.MeshBasicMaterial({ map: child.material.map })
-
-                            }
-                        })
-                        document.getElementById("loadscreen").style.opacity = 0
-                        scene.add(gltf.scene);
-                        renderer.render(scene, camera);
-                    });
-                })
         }
 
-
-        document.getElementById("loadscreen").addEventListener('transitionend', (e) => {
-            console.log('Transition ended');
-            document.getElementById("loadscreen").remove()
-        });
 
 
 
@@ -138,8 +120,8 @@ function PokemonDetail(props) {
         function onWindowResize() {
             console.log("resize")
 
-            canvasWidth = document.getElementById(name).offsetWidth
-            canvasHeight = document.getElementById(name).offsetHeight
+            canvasWidth = document.getElementById("detailCanvas").offsetWidth
+            canvasHeight = document.getElementById("detailCanvas").offsetHeight
             renderer.setSize(canvasWidth, canvasHeight);
             camera.aspect = canvasWidth / canvasHeight
             camera.updateProjectionMatrix();
@@ -147,32 +129,63 @@ function PokemonDetail(props) {
 
     }, [])
 
-    const mappedTypes = location.state.types.map(type => {
-        return (
-            <p className={`type--${type.type.name} pokemoncard--type`} key={type.type.name}>{type.type.name}</p>
-        )
-    })
+    let mappedTypes
+
+    React.useEffect(() => {
+        if (currentPokemon) {
+            mappedTypes = currentPokemon.types.map(type => {
+                return (
+                    <p className={`type--${type.type.name} pokemoncard--type`} key={type.type.name}>{type.type.name}</p>
+                )
+            })
+        }
+    }, [currentPokemon])
+
+
+
+    /* const contentPrevF = () => {
+        return "prev" + (id - 1)
+    }
+    let contentPrev = contentPrevF()
+
+
+    const contentNextF = () => {
+
+        let nextId = id + 1
+
+        fetch(`https://pokeapi.co/api/v2/pokemon/${nextId}`)
+            .then(res => res.json())
+            .then(data => {
+                console.log("🚀 ~ file: PokemonDetail.js ~ line 171 ~ contentNextF ~ data", data)
+                return (<Link to={`/pokemon/${data.id}`}>
+                    {data.name}
+                </Link>)
+            })
+
+
+    }
+    let contentNext = contentNextF() */
+
 
     return (
         <div className='pokemondetail'>
             <Header />
-            <div id={name} className="pokemondetail--pokemonCanvas">
+            <div id={"detailCanvas"} className="pokemondetail--pokemonCanvas">
                 <div id='loadscreen' className='pokemondetail__loadscreen'><h2>Loading...</h2></div>
 
-                <div className='pokemondetail__details'>
-                    <div>{"back"}</div>
-                    <div>{"prev"}</div>
-                    <div>{"next"}</div>
-
-                    <div className='pokemondetail__details__bottom'>
-                        <div className='pokemondetail__details__types'>{mappedTypes}</div>
-                        <h1 className='pokemondetail__details__name'>{name}</h1>
-                        <div className='pokemondetail__details__title'>{"title"}</div>
-
-                    </div>
-
-
-                </div>
+                {currentPokemon &&
+                    <div className='pokemondetail__details'>
+                        <div>{"back"}</div>
+                        <div className='pokemondetail__details__bottom'>
+                            <div className='pokemondetail__details__types'>{mappedTypes}</div>
+                            <h1 className='pokemondetail__details__name'>{currentPokemon.name}</h1>
+                            <div className='pokemondetail__details__title'>{"title"}</div>
+                            <div className='pokemondetail__nav'>
+                                <div className='pokemondetail__prev'>{/* contentPrev */}</div>
+                                <div className='pokemondetail__next'>{/* contentNext */}</div>
+                            </div>
+                        </div>
+                    </div>}
 
             </div>
         </div>
