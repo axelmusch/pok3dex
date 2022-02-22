@@ -199,6 +199,20 @@
     height: 100vh;
 }
 
+.pokemondetail__sprite {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    height: 100%;
+    align-items: center;
+    flex-direction: column;
+}
+
+.pokemondetail__sprite>img {
+    width: 500px;
+    max-width: 100%;
+}
+
 .pokemondetail__loadscreen {
     position: absolute;
     width: 100%;

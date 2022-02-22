@@ -196,7 +196,12 @@ function PokemonDetail() {
             <div id={"detailCanvas"} className="pokemondetail--pokemonCanvas">
                 <div id='loadscreen' className='pokemondetail__loadscreen'><h2>Loading...</h2></div>
 
-                {(!hasModel && currentPokemon) && <div><img src={currentPokemon.sprites.front_default} /></div>}
+                {(!hasModel && currentPokemon) &&
+                    <div className='pokemondetail__sprite'>
+                        <img src={currentPokemon.sprites.front_default} />
+                        <h3>No 3D model available yet...</h3>
+                    </div>}
+
                 {currentPokemon &&
                     <div className='pokemondetail__details'>
                         <div>{"back"}</div>
