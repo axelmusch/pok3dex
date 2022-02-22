@@ -6,8 +6,8 @@ import PokemonCard from "./PokemonCard"
 export default function PokemonList(props) {
     const [pokemonList, setPokemonList] = React.useState([])
 
-    const numberOfMons = 60
-
+    const numberOfMons = 20
+    //TODO: load pages when scrolled
 
     React.useEffect(() => {
         fetch(`https://pokeapi.co/api/v2/pokemon?limit=${numberOfMons}`)

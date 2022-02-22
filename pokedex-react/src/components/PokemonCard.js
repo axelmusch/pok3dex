@@ -38,21 +38,24 @@ export default function PokemonCard(props) {
 
 
     return (
+
         <div className="pokemoncard">
             <div className="pokemoncard--topButtons">
                 <p className="noselect" onClick={toggleShiny}>{!showShiny ? '⭐' : '🌟'}</p>
                 {hasModel &&
-                    <Link className="pokemoncard--3dVisibility noselect" to={`/pokemon/${id}`} state={props.pokeInfo}>
-                        {/*  <p className="pokemoncard--3dVisibility noselect">{modelShown ? "Hide" : "Show"} 3D</p> */}
-                        <img src={logo_small} />
-                    </Link>}
+
+                    <div className="pokemoncard--3dVisibility noselect"><img src={logo_small} /></div>
+
+                }
             </div>
 
+            <Link className="pokemoncard--sprite" to={`/pokemon/${id}`} state={props.pokeInfo}>
+                <img className="pokemoncard--sprite" src={showShiny ? sprites.front_shiny : sprites.front_default} />
+            </Link>
 
-            <img className="pokemoncard--sprite" src={showShiny ? sprites.front_shiny : sprites.front_default} />
-
-
-            <h2>{id}. {name}</h2>
+            <Link to={`/pokemon/${id}`} state={props.pokeInfo}>
+                <h2 className="pokemoncard__name">{id}. {name}</h2>
+            </Link>
             <div className="pokemoncard--types">{mappedTypes}</div>
         </div>
     )

@@ -110,6 +110,10 @@
 
 }
 
+.pokemoncard__name {
+    text-transform: capitalize;
+}
+
 .type--normal {
     background-color: #A8A8A8;
 }
@@ -226,6 +230,7 @@
 
 .pokemondetail__details__name {
     font-size: 5rem;
+    text-transform: capitalize;
 }
 
 .pokemondetail__details__types {

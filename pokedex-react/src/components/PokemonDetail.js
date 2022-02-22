@@ -12,10 +12,57 @@ import Header from './Header';
 function PokemonDetail() {
     const { pokemonId } = useParams()
     const [currentPokemon, setCurrentPokemon] = React.useState()
+    const [currentTitle, setCurrentTitle] = React.useState("")
+    const [hasModel, setHasModel] = React.useState(false)
+
     const [prevPokemon, setPrevPokemon] = React.useState()
     const [nextPokemon, setNextPokemon] = React.useState()
 
     React.useEffect(() => {
+
+        let dat
+        fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`)
+            .then(res => res.json())
+            .then(data => {
+
+                setCurrentPokemon(data)
+                fetch(data.species.url).then(res => res.json())
+                    .then(data => {
+                        console.log("🚀 ~ file: PokemonDetail.js ~ line 91 ~ React.useEffect ~ data", data.flavor_text_entries[0])
+                        setCurrentTitle(data.flavor_text_entries[0].flavor_text)
+                    })
+
+
+                console.log(modelInfo);
+                if (modelInfo.includes(parseInt(pokemonId))) {
+                    console.log("has model");
+                    initModel(data)
+                    setHasModel(true)
+
+                } else {
+                    console.log("NO model");
+                }
+
+
+
+            })
+
+
+        if (document.getElementById("loadscreen")) {
+            document.getElementById("loadscreen").addEventListener('transitionend', (e) => {
+                console.log('Transition ended');
+                document.getElementById("loadscreen").remove()
+            });
+        }
+
+
+
+
+
+
+    }, [])
+
+    function initModel(dat) {
         let scene = new THREE.Scene();
         let renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         let canvasWidth = document.getElementById("detailCanvas").offsetWidth
@@ -23,7 +70,6 @@ function PokemonDetail() {
         let camera = new THREE.PerspectiveCamera(30, canvasWidth / canvasHeight, 0.1, 1000);
         renderer.setSize(canvasWidth, canvasHeight);
         document.getElementById("detailCanvas").appendChild(renderer.domElement);
-
         let controls = new OrbitControls(camera, renderer.domElement);
         controls.enablePan = false
         //controls.enableZoom = false
@@ -76,39 +122,17 @@ function PokemonDetail() {
 
         loader.dracoLoader = dracoLoader
 
-        let dat
-
-        fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`)
-            .then(res => res.json())
-            .then(data => {
-                console.log("🚀 ~ file: PokemonDetail.js ~ line 105 ~ React.useEffect ~ data", data)
-                console.log(data)
-                dat = data
-                setCurrentPokemon(dat)
-                loader.load(`../models/${dat.name}.glb`, function (gltf) {
-                    gltf.scene.traverse(child => {
-                        if (child.isMesh) {
-                            child.material.roughness = 0.8
-                            let newMat = new THREE.MeshBasicMaterial({ map: child.material.map })
-                        }
-                    })
-                    if (document.getElementById("loadscreen")) document.getElementById("loadscreen").style.opacity = 0
-                    scene.add(gltf.scene);
-                    renderer.render(scene, camera);
-                });
-            })
-
-
-        if (document.getElementById("loadscreen")) {
-            document.getElementById("loadscreen").addEventListener('transitionend', (e) => {
-                console.log('Transition ended');
-                document.getElementById("loadscreen").remove()
-            });
-        }
-
-
-
-
+        loader.load(`../models/${dat.name}.glb`, function (gltf) {
+            gltf.scene.traverse(child => {
+                if (child.isMesh) {
+                    child.material.roughness = 0.8
+                    let newMat = new THREE.MeshBasicMaterial({ map: child.material.map })
+                }
+            }, () => { }, (event) => { console.log(event) })
+            if (document.getElementById("loadscreen")) document.getElementById("loadscreen").style.opacity = 0
+            scene.add(gltf.scene);
+            renderer.render(scene, camera);
+        });
         let animate = function () {
             requestAnimationFrame(animate);
             controls.update()
@@ -118,7 +142,6 @@ function PokemonDetail() {
 
         window.addEventListener('resize', onWindowResize);
         function onWindowResize() {
-            console.log("resize")
 
             canvasWidth = document.getElementById("detailCanvas").offsetWidth
             canvasHeight = document.getElementById("detailCanvas").offsetHeight
@@ -126,22 +149,18 @@ function PokemonDetail() {
             camera.aspect = canvasWidth / canvasHeight
             camera.updateProjectionMatrix();
         }
-
-    }, [])
-
-    let mappedTypes
-
-    React.useEffect(() => {
-        if (currentPokemon) {
-            mappedTypes = currentPokemon.types.map(type => {
-                return (
-                    <p className={`type--${type.type.name} pokemoncard--type`} key={type.type.name}>{type.type.name}</p>
-                )
-            })
-        }
-    }, [currentPokemon])
+    }
 
 
+    let mappedTypes = []
+
+    if (currentPokemon) {
+        mappedTypes = currentPokemon.types.map(type => {
+            return (
+                <p className={`type--${type.type.name} pokemoncard--type`} key={type.type.name}>{type.type.name}</p>
+            )
+        })
+    }
 
     /* const contentPrevF = () => {
         return "prev" + (id - 1)
@@ -172,14 +191,14 @@ function PokemonDetail() {
             <Header />
             <div id={"detailCanvas"} className="pokemondetail--pokemonCanvas">
                 <div id='loadscreen' className='pokemondetail__loadscreen'><h2>Loading...</h2></div>
-
+                {!hasModel && <div>no model</div>}
                 {currentPokemon &&
                     <div className='pokemondetail__details'>
                         <div>{"back"}</div>
                         <div className='pokemondetail__details__bottom'>
                             <div className='pokemondetail__details__types'>{mappedTypes}</div>
                             <h1 className='pokemondetail__details__name'>{currentPokemon.name}</h1>
-                            <div className='pokemondetail__details__title'>{"title"}</div>
+                            <div className='pokemondetail__details__title'>{currentTitle}</div>
                             <div className='pokemondetail__nav'>
                                 <div className='pokemondetail__prev'>{/* contentPrev */}</div>
                                 <div className='pokemondetail__next'>{/* contentNext */}</div>
