@@ -20,7 +20,13 @@ function PokemonDetail() {
 
     React.useEffect(() => {
 
-        let dat
+        if (document.getElementById("loadscreen")) {
+            document.getElementById("loadscreen").addEventListener('transitionend', (e) => {
+                console.log('Transition ended');
+                document.getElementById("loadscreen").remove()
+            });
+        }
+
         fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`)
             .then(res => res.json())
             .then(data => {
@@ -41,6 +47,8 @@ function PokemonDetail() {
 
                 } else {
                     console.log("NO model");
+                    if (document.getElementById("loadscreen")) document.getElementById("loadscreen").style.opacity = 0
+
                 }
 
 
@@ -48,12 +56,7 @@ function PokemonDetail() {
             })
 
 
-        if (document.getElementById("loadscreen")) {
-            document.getElementById("loadscreen").addEventListener('transitionend', (e) => {
-                console.log('Transition ended');
-                document.getElementById("loadscreen").remove()
-            });
-        }
+
 
 
 
@@ -189,9 +192,11 @@ function PokemonDetail() {
     return (
         <div className='pokemondetail'>
             <Header />
+
             <div id={"detailCanvas"} className="pokemondetail--pokemonCanvas">
                 <div id='loadscreen' className='pokemondetail__loadscreen'><h2>Loading...</h2></div>
-                {!hasModel && <div>no model</div>}
+
+                {(!hasModel && currentPokemon) && <div><img src={currentPokemon.sprites.front_default} /></div>}
                 {currentPokemon &&
                     <div className='pokemondetail__details'>
                         <div>{"back"}</div>
