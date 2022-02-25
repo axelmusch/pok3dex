@@ -1,8 +1,8 @@
 import React from "react"
 import { Link } from "react-router-dom";
-
 import modelInfo from "../modelInfo";
 import logo_small from "../images/logo_small.png"
+
 export default function PokemonCard(props) {
     const [showShiny, setShowShiny] = React.useState(false)
 
@@ -24,7 +24,7 @@ export default function PokemonCard(props) {
     React.useEffect(() => {
         modelInfo[id - 1] && setHasModel(true)
 
-    })
+    }, [])
 
 
     return (
@@ -33,12 +33,12 @@ export default function PokemonCard(props) {
             <div className="pokemoncard--topButtons">
                 <p className="noselect" onClick={toggleShiny}>{!showShiny ? '⭐' : '🌟'}</p>
                 {hasModel &&
-                    <div className="pokemoncard--3dVisibility noselect"><img src={logo_small} /></div>
+                    <div className="pokemoncard--3dVisibility noselect"><img alt="" src={logo_small} /></div>
                 }
             </div>
 
             <Link className="pokemoncard--sprite" to={`/pokemon/${id}`} state={props.pokeInfo}>
-                <img className="pokemoncard--sprite" src={showShiny ? sprites.front_shiny : sprites.front_default} />
+                <img alt="" className="pokemoncard--sprite" src={showShiny ? sprites.front_shiny : sprites.front_default} />
             </Link>
 
             <Link to={`/pokemon/${id}`} className="pokemoncard__name" state={props.pokeInfo}>

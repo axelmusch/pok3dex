@@ -19,13 +19,12 @@ function PokemonDetail() {
     const [prevPokemon, setPrevPokemon] = React.useState()
     const [nextPokemon, setNextPokemon] = React.useState()
 
+    let canvasWidth, canvasHeight, camera, renderer
+
     React.useEffect(() => {
 
         if (document.getElementById("loadscreen")) {
-            document.getElementById("loadscreen").addEventListener('transitionend', (e) => {
-                console.log('Transition ended');
-                document.getElementById("loadscreen").remove()
-            });
+            document.getElementById("loadscreen").addEventListener('transitionend', removeLoadScreen);
         }
 
         fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`)
@@ -49,14 +48,24 @@ function PokemonDetail() {
                     if (document.getElementById("loadscreen")) document.getElementById("loadscreen").style.opacity = 0
                 }
             })
-    }, [])
+
+        return () => {
+            window.removeEventListener('resize', onWindowResize);
+            window.removeEventListener('transitionend', removeLoadScreen);
+        }
+    }, [pokemonId])
+
+    function removeLoadScreen() {
+        document.getElementById("loadscreen").remove()
+
+    }
 
     function initModel(dat) {
         let scene = new THREE.Scene();
-        let renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        let canvasWidth = document.getElementById("detailCanvas").offsetWidth
-        let canvasHeight = document.getElementById("detailCanvas").offsetHeight
-        let camera = new THREE.PerspectiveCamera(30, canvasWidth / canvasHeight, 0.1, 1000);
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        canvasWidth = document.getElementById("detailCanvas").offsetWidth
+        canvasHeight = document.getElementById("detailCanvas").offsetHeight
+        camera = new THREE.PerspectiveCamera(30, canvasWidth / canvasHeight, 0.1, 1000);
         renderer.setSize(canvasWidth, canvasHeight);
         document.getElementById("detailCanvas").appendChild(renderer.domElement);
         let controls = new OrbitControls(camera, renderer.domElement);
@@ -123,7 +132,6 @@ function PokemonDetail() {
             gltf.scene.traverse(child => {
                 if (child.isMesh) {
                     child.material.roughness = 0.8
-                    let newMat = new THREE.MeshBasicMaterial({ map: child.material.map })
                 }
             }, () => { }, (event) => { console.log(event) })
             if (document.getElementById("loadscreen")) document.getElementById("loadscreen").style.opacity = 0
@@ -139,15 +147,15 @@ function PokemonDetail() {
         //TODO: remove listener when back
         window.addEventListener('resize', onWindowResize);
 
-        function onWindowResize() {
-            canvasWidth = document.getElementById("detailCanvas").offsetWidth
-            canvasHeight = document.getElementById("detailCanvas").offsetHeight
-            renderer.setSize(canvasWidth, canvasHeight);
-            camera.aspect = canvasWidth / canvasHeight
-            camera.updateProjectionMatrix();
-        }
-    }
 
+    }
+    function onWindowResize() {
+        canvasWidth = document.getElementById("detailCanvas").offsetWidth
+        canvasHeight = document.getElementById("detailCanvas").offsetHeight
+        renderer.setSize(canvasWidth, canvasHeight);
+        camera.aspect = canvasWidth / canvasHeight
+        camera.updateProjectionMatrix();
+    }
 
     let mappedTypes = []
 
@@ -192,7 +200,7 @@ function PokemonDetail() {
 
                 {(!hasModel && currentPokemon) &&
                     <div className='pokemondetail__sprite'>
-                        <img src={currentPokemon.sprites.front_default} />
+                        <img alt='' src={currentPokemon.sprites.front_default} />
                         <h3>No 3D model available yet...</h3>
                     </div>}
 

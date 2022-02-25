@@ -2,7 +2,6 @@ import React from "react"
 import Header from "./Header"
 import PokemonCard from "./PokemonCard"
 
-
 export default function PokemonList(props) {
     const [pokemonList, setPokemonList] = React.useState([])
 
