@@ -12,7 +12,7 @@ export default function App() {
     return (
         <div className="app">
 
-            <Router>
+            <Router basename="/-collection/pok3dex">
                 <Routes>
 
                     <Route exact path="/" element={<PokemonList />}>

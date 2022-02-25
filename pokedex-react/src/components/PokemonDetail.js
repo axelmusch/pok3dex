@@ -127,8 +127,8 @@ function PokemonDetail() {
         dracoLoader.setDecoderPath('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/'); // use a full url path
 
         loader.dracoLoader = dracoLoader
-        console.log(`../models/${dat.name}.glb`)
-        loader.load(`../models/${dat.name}.glb`, function (gltf) {
+        console.log(`/models/${dat.name}.glb`)
+        loader.load(`/models/${dat.name}.glb`, function (gltf) {
             gltf.scene.traverse(child => {
                 if (child.isMesh) {
                     child.material.roughness = 0.8
@@ -146,9 +146,8 @@ function PokemonDetail() {
         animate();
         //TODO: remove listener when back
         window.addEventListener('resize', onWindowResize);
-
-
     }
+
     function onWindowResize() {
         canvasWidth = document.getElementById("detailCanvas").offsetWidth
         canvasHeight = document.getElementById("detailCanvas").offsetHeight
