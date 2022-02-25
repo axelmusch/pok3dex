@@ -7,6 +7,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import modelInfo from "../modelInfo";
+import backIcon from "../images/back_icon.svg";
 import Header from './Header';
 
 function PokemonDetail() {
@@ -41,28 +42,13 @@ function PokemonDetail() {
 
                 console.log(modelInfo);
                 if (modelInfo.includes(parseInt(pokemonId))) {
-                    console.log("has model");
                     initModel(data)
                     setHasModel(true)
 
                 } else {
-                    console.log("NO model");
                     if (document.getElementById("loadscreen")) document.getElementById("loadscreen").style.opacity = 0
-
                 }
-
-
-
             })
-
-
-
-
-
-
-
-
-
     }, [])
 
     function initModel(dat) {
@@ -83,40 +69,48 @@ function PokemonDetail() {
         const light = new THREE.PointLight(0xffffff, 1, 100);
         light.position.set(2, 1, 2);
         scene.add(light);
-        const helper = new THREE.PointLightHelper(light, 1);
+
 
         const light2 = new THREE.PointLight(0xffffff, 1, 100);
         light2.position.set(-2, 1, 2);
         scene.add(light2);
-        const helper2 = new THREE.PointLightHelper(light2, 1);
 
         const light3 = new THREE.PointLight(0xffffff, 1, 100);
         light3.position.set(2, 1, -2);
         scene.add(light3);
-        const helper3 = new THREE.PointLightHelper(light3, 1);
 
 
         const light4 = new THREE.PointLight(0xffffff, 1, 100);
         light4.position.set(-2, 1, -2);
         scene.add(light4);
-        const helper4 = new THREE.PointLightHelper(light4, 1);
 
         const light6 = new THREE.PointLight(0xffffff, 1, 100);
         light6.position.set(0, 1, 0);
         scene.add(light6);
-        const helper6 = new THREE.PointLightHelper(light4, 1);
 
 
         const light5 = new THREE.PointLight(0xffffff, 1, 100);
         light5.position.set(0, -2, 0);
         scene.add(light5);
-        const helper5 = new THREE.PointLightHelper(light5, 1);
+        /* 
+                const helper6 = new THREE.PointLightHelper(light4, 1);
+                scene.add(helper6);
+        
+                const helper5 = new THREE.PointLightHelper(light5, 1);
+                scene.add(helper5);
+        
+                const helper4 = new THREE.PointLightHelper(light4, 1);
+                scene.add(helper4);
+        
+                const helper3 = new THREE.PointLightHelper(light3, 1);
+                scene.add(helper3);
+        
+                const helper2 = new THREE.PointLightHelper(light2, 1);
+                scene.add(helper2);
+        
+                const helper = new THREE.PointLightHelper(light, 1);
+                scene.add(helper); */
 
-        /* scene.add(helper5);
-        scene.add(helper4);
-        scene.add(helper3);
-        scene.add(helper2);
-        scene.add(helper); */
 
         scene.add(light);
         const loader = new GLTFLoader()
@@ -124,7 +118,7 @@ function PokemonDetail() {
         dracoLoader.setDecoderPath('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/'); // use a full url path
 
         loader.dracoLoader = dracoLoader
-
+        console.log(`../models/${dat.name}.glb`)
         loader.load(`../models/${dat.name}.glb`, function (gltf) {
             gltf.scene.traverse(child => {
                 if (child.isMesh) {
@@ -142,10 +136,10 @@ function PokemonDetail() {
             renderer.render(scene, camera);
         };
         animate();
-
+        //TODO: remove listener when back
         window.addEventListener('resize', onWindowResize);
-        function onWindowResize() {
 
+        function onWindowResize() {
             canvasWidth = document.getElementById("detailCanvas").offsetWidth
             canvasHeight = document.getElementById("detailCanvas").offsetHeight
             renderer.setSize(canvasWidth, canvasHeight);
@@ -204,7 +198,13 @@ function PokemonDetail() {
 
                 {currentPokemon &&
                     <div className='pokemondetail__details'>
-                        <div>{"back"}</div>
+                        <Link to="/">
+                            <div className='pokemondetail__details__back'>
+                                <img alt='' src={backIcon} />
+                                <h1>Back</h1>
+                            </div>
+
+                        </Link>
                         <div className='pokemondetail__details__bottom'>
                             <div className='pokemondetail__details__types'>{mappedTypes}</div>
                             <h1 className='pokemondetail__details__name'>{currentPokemon.name}</h1>

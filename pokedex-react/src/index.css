@@ -50,14 +50,12 @@
 }
 
 .pokemonlist {
-    width: 80vw;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     column-gap: 25px;
     row-gap: 25px;
     justify-content: center;
-    margin: 2.5vw auto;
-    padding: 10px;
+    padding: 25px 10vw;
     overflow: auto;
 }
 
@@ -115,6 +113,8 @@
 
 .pokemoncard__name {
     text-transform: capitalize;
+    color: black;
+    text-decoration: none;
 }
 
 .type--normal {
@@ -200,6 +200,21 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
+}
+
+.pokemondetail__details__back {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    pointer-events: all;
+    display: flex;
+    align-items: center;
+    color: #FF4E4E;
+    font-weight: 40px;
+}
+
+.pokemondetail__details__back>img {
+    height: 65px;
 }
 
 .pokemondetail__sprite {

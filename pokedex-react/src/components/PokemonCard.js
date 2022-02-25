@@ -11,14 +11,9 @@ export default function PokemonCard(props) {
     const { name, id, sprites, types } = props.pokeInfo
     const [hasModel, setHasModel] = React.useState(false)
 
-
-
     function toggleShiny() {
         setShowShiny(prevShiny => !prevShiny)
     }
-
-
-
 
     const mappedTypes = types.map(type => {
         return (
@@ -26,15 +21,10 @@ export default function PokemonCard(props) {
         )
     })
 
-
-
     React.useEffect(() => {
         modelInfo[id - 1] && setHasModel(true)
 
     })
-
-
-
 
 
     return (
@@ -43,9 +33,7 @@ export default function PokemonCard(props) {
             <div className="pokemoncard--topButtons">
                 <p className="noselect" onClick={toggleShiny}>{!showShiny ? '⭐' : '🌟'}</p>
                 {hasModel &&
-
                     <div className="pokemoncard--3dVisibility noselect"><img src={logo_small} /></div>
-
                 }
             </div>
 
@@ -53,9 +41,10 @@ export default function PokemonCard(props) {
                 <img className="pokemoncard--sprite" src={showShiny ? sprites.front_shiny : sprites.front_default} />
             </Link>
 
-            <Link to={`/pokemon/${id}`} state={props.pokeInfo}>
-                <h2 className="pokemoncard__name">{id}. {name}</h2>
+            <Link to={`/pokemon/${id}`} className="pokemoncard__name" state={props.pokeInfo}>
+                <h2 >{id}. {name}</h2>
             </Link>
+
             <div className="pokemoncard--types">{mappedTypes}</div>
         </div>
     )

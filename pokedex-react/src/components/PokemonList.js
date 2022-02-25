@@ -39,7 +39,7 @@ export default function PokemonList(props) {
         )
     })
 
-    console.log(pokemonList)
+    //console.log(pokemonList)
 
     return (
         <div className="pokelist">
