@@ -128,7 +128,7 @@ function PokemonDetail() {
 
         loader.dracoLoader = dracoLoader
         console.log(`/models/${dat.name}.glb`)
-        loader.load(`/models/${dat.name}.glb`, function (gltf) {
+        loader.load(`../models/${dat.name}.glb`, function (gltf) {
             gltf.scene.traverse(child => {
                 if (child.isMesh) {
                     child.material.roughness = 0.8
