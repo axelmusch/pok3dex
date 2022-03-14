@@ -74,51 +74,51 @@ function PokemonDetail() {
         controls.autoRotate = true
         camera.position.z = 8;
         camera.position.y = 0.5;
-
-        const light = new THREE.PointLight(0xffffff, 1, 100);
-        light.position.set(2, 1, 2);
+        const lightint = 1
+        const light = new THREE.PointLight(0xffffff, lightint, 100);
+        light.position.set(2, 2, 2);
         scene.add(light);
 
 
-        const light2 = new THREE.PointLight(0xffffff, 1, 100);
-        light2.position.set(-2, 1, 2);
+        const light2 = new THREE.PointLight(0xffffff, lightint, 100);
+        light2.position.set(-2, 2, 2);
         scene.add(light2);
 
-        const light3 = new THREE.PointLight(0xffffff, 1, 100);
-        light3.position.set(2, 1, -2);
+        const light3 = new THREE.PointLight(0xffffff, lightint, 100);
+        light3.position.set(2, 2, -2);
         scene.add(light3);
 
 
-        const light4 = new THREE.PointLight(0xffffff, 1, 100);
-        light4.position.set(-2, 1, -2);
+        const light4 = new THREE.PointLight(0xffffff, lightint, 100);
+        light4.position.set(-2, 2, -2);
         scene.add(light4);
 
-        const light6 = new THREE.PointLight(0xffffff, 1, 100);
-        light6.position.set(0, 1, 0);
+        const light6 = new THREE.PointLight(0xffffff, lightint, 100);
+        light6.position.set(0, 2, 0);
         scene.add(light6);
 
 
-        const light5 = new THREE.PointLight(0xffffff, 1, 100);
+        const light5 = new THREE.PointLight(0xffffff, lightint, 100);
         light5.position.set(0, -2, 0);
         scene.add(light5);
-        /* 
-                const helper6 = new THREE.PointLightHelper(light4, 1);
-                scene.add(helper6);
-        
-                const helper5 = new THREE.PointLightHelper(light5, 1);
-                scene.add(helper5);
-        
-                const helper4 = new THREE.PointLightHelper(light4, 1);
-                scene.add(helper4);
-        
-                const helper3 = new THREE.PointLightHelper(light3, 1);
-                scene.add(helper3);
-        
-                const helper2 = new THREE.PointLightHelper(light2, 1);
-                scene.add(helper2);
-        
-                const helper = new THREE.PointLightHelper(light, 1);
-                scene.add(helper); */
+
+        const helper6 = new THREE.PointLightHelper(light4, 1);
+        scene.add(helper6);
+
+        const helper5 = new THREE.PointLightHelper(light5, 1);
+        scene.add(helper5);
+
+        const helper4 = new THREE.PointLightHelper(light4, 1);
+        scene.add(helper4);
+
+        const helper3 = new THREE.PointLightHelper(light3, 1);
+        scene.add(helper3);
+
+        const helper2 = new THREE.PointLightHelper(light2, 1);
+        scene.add(helper2);
+
+        const helper = new THREE.PointLightHelper(light, 1);
+        scene.add(helper);
 
 
         scene.add(light);
@@ -131,8 +131,13 @@ function PokemonDetail() {
         loader.load(`../models/${dat.name}.glb`, function (gltf) {
             gltf.scene.traverse(child => {
                 if (child.isMesh) {
-                    child.material.roughness = 0.8
+                    let newmat = new THREE.MeshBasicMaterial()
+                    child.material.roughness = 0.9
+                    console.log(child.material)
+                    newmat.map = child.material.map
+                    child.material = newmat
                 }
+
             }, () => { }, (event) => { console.log(event) })
             if (document.getElementById("loadscreen")) document.getElementById("loadscreen").style.opacity = 0
             scene.add(gltf.scene);
