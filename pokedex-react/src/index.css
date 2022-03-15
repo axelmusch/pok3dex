@@ -258,6 +258,7 @@
     position: absolute;
     bottom: 0;
     margin: 50px;
+    width: calc(100% - 100px);
 }
 
 .pokemondetail__details__name {
@@ -276,6 +277,19 @@
 
 .pokemondetail__nav {
     display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 10px;
 }
 
-.pokemondetail__prev, .pokemondetail__next {}
+.pokemondetail__prev, .pokemondetail__next {
+
+    pointer-events: all;
+    font-size: 28px;
+    padding: 20px;
+    color: white;
+    background-color: #FF4E4E;
+    border-radius: 20px;
+    text-decoration: none;
+
+}

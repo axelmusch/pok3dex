@@ -16,8 +16,8 @@ function PokemonDetail() {
     const [currentTitle, setCurrentTitle] = React.useState("")
     const [hasModel, setHasModel] = React.useState(false)
 
-    const [prevPokemon, setPrevPokemon] = React.useState()
-    const [nextPokemon, setNextPokemon] = React.useState()
+    const [prevPokemon, setPrevPokemon] = React.useState({ id: "-", name: "nope" })
+    const [nextPokemon, setNextPokemon] = React.useState({ id: "-", name: "nope" })
 
     let canvasWidth, canvasHeight, camera, renderer
 
@@ -38,20 +38,30 @@ function PokemonDetail() {
                         setCurrentTitle(data.flavor_text_entries[0].flavor_text)
                     })
 
-
                 console.log(modelInfo);
+
                 if (modelInfo.includes(parseInt(pokemonId))) {
                     initModel(data)
                     setHasModel(true)
 
                 } else {
+                    setHasModel(false)
                     if (document.getElementById("loadscreen")) document.getElementById("loadscreen").style.opacity = 0
                 }
+
+                fetchNextPokemon(pokemonId)
+                fetchPrevPokemon(pokemonId)
             })
 
         return () => {
             window.removeEventListener('resize', onWindowResize);
             window.removeEventListener('transitionend', removeLoadScreen);
+
+            const node = document.getElementById("detailCanvas")
+            if (node.lastElementChild.id === "pokeCanvas") {
+                node.removeChild(node.lastElementChild)
+            }
+
         }
     }, [pokemonId])
 
@@ -67,7 +77,9 @@ function PokemonDetail() {
         canvasHeight = document.getElementById("detailCanvas").offsetHeight
         camera = new THREE.PerspectiveCamera(30, canvasWidth / canvasHeight, 0.1, 1000);
         renderer.setSize(canvasWidth, canvasHeight);
-        document.getElementById("detailCanvas").appendChild(renderer.domElement);
+
+        let canvas = document.getElementById("detailCanvas").appendChild(renderer.domElement);
+        canvas.id = "pokeCanvas"
         let controls = new OrbitControls(camera, renderer.domElement);
         controls.enablePan = false
         //controls.enableZoom = false
@@ -88,7 +100,6 @@ function PokemonDetail() {
         light3.position.set(2, 2, -2);
         scene.add(light3);
 
-
         const light4 = new THREE.PointLight(0xffffff, lightint, 100);
         light4.position.set(-2, 2, -2);
         scene.add(light4);
@@ -96,7 +107,6 @@ function PokemonDetail() {
         const light6 = new THREE.PointLight(0xffffff, lightint, 100);
         light6.position.set(0, 2, 0);
         scene.add(light6);
-
 
         const light5 = new THREE.PointLight(0xffffff, lightint, 100);
         light5.position.set(0, -2, 0);
@@ -133,7 +143,6 @@ function PokemonDetail() {
                 if (child.isMesh) {
                     let newmat = new THREE.MeshBasicMaterial()
                     child.material.roughness = 0.9
-                    console.log(child.material)
                     newmat.map = child.material.map
                     child.material = newmat
                 }
@@ -149,7 +158,6 @@ function PokemonDetail() {
             renderer.render(scene, camera);
         };
         animate();
-        //TODO: remove listener when back
         window.addEventListener('resize', onWindowResize);
     }
 
@@ -159,6 +167,33 @@ function PokemonDetail() {
         renderer.setSize(canvasWidth, canvasHeight);
         camera.aspect = canvasWidth / canvasHeight
         camera.updateProjectionMatrix();
+    }
+
+    function fetchNextPokemon(curr) {
+        let newId = parseInt(curr) + 1
+
+        fetch(`https://pokeapi.co/api/v2/pokemon/${newId}`)
+            .then(res => res.json())
+            .then(data => {
+                setNextPokemon(data)
+            })
+    }
+
+    function fetchPrevPokemon(curr) {
+        console.log(curr)
+        if (parseInt(curr) !== 1) {
+            let newId = parseInt(curr) - 1
+
+            fetch(`https://pokeapi.co/api/v2/pokemon/${newId}`)
+                .then(res => res.json())
+                .then(data => {
+                    setPrevPokemon(data)
+                })
+        } else {
+            let val = { id: "-", name: "nope" }
+            setPrevPokemon(val)
+        }
+
     }
 
     let mappedTypes = []
@@ -171,29 +206,10 @@ function PokemonDetail() {
         })
     }
 
-    /* const contentPrevF = () => {
-        return "prev" + (id - 1)
-    }
-    let contentPrev = contentPrevF()
 
 
-    const contentNextF = () => {
-
-        let nextId = id + 1
-
-        fetch(`https://pokeapi.co/api/v2/pokemon/${nextId}`)
-            .then(res => res.json())
-            .then(data => {
-                console.log("🚀 ~ file: PokemonDetail.js ~ line 171 ~ contentNextF ~ data", data)
-                return (<Link to={`/pokemon/${data.id}`}>
-                    {data.name}
-                </Link>)
-            })
-
-
-    }
-    let contentNext = contentNextF() */
-
+    let previousNumber = parseInt(pokemonId) - 1
+    let nextNumber = parseInt(pokemonId) + 1
 
     return (
         <div className='pokemondetail'>
@@ -215,15 +231,21 @@ function PokemonDetail() {
                                 <img alt='' src={backIcon} />
                                 <h1>Back</h1>
                             </div>
-
                         </Link>
+
                         <div className='pokemondetail__details__bottom'>
                             <div className='pokemondetail__details__types'>{mappedTypes}</div>
                             <h1 className='pokemondetail__details__name'>{currentPokemon.name}</h1>
                             <div className='pokemondetail__details__title'>{currentTitle}</div>
                             <div className='pokemondetail__nav'>
-                                <div className='pokemondetail__prev'>{/* contentPrev */}</div>
-                                <div className='pokemondetail__next'>{/* contentNext */}</div>
+
+                                <Link className='pokemondetail__prev' to={`/pokemon/${previousNumber}`}>
+                                    <div >{prevPokemon.id + " - " + prevPokemon.name}</div>
+                                </Link>
+                                <Link className='pokemondetail__next' to={`/pokemon/${nextNumber}`}>
+                                    <div >{nextPokemon.id + " - " + nextPokemon.name}</div>
+                                </Link>
+
                             </div>
                         </div>
                     </div>}
